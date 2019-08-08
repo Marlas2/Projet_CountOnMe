@@ -22,7 +22,7 @@ class CalculatorTests: XCTestCase {
         calculator.addition()
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
-        XCTAssertEqual(calculator.calculText, "1 + 1 = 2")
+        XCTAssertEqual(calculator.calculText, "1 + 1 = 2.0")
     }
     
     func testGivenAddNewNumber_WhenSoustractionIsTapped_ThenShowResult() {
@@ -30,7 +30,7 @@ class CalculatorTests: XCTestCase {
         calculator.soustraction()
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
-        XCTAssertEqual(calculator.calculText, "1 - 1 = 0")
+        XCTAssertEqual(calculator.calculText, "1 - 1 = 0.0")
     }
     
     func testGivenAddNewNumber_WhenMultiplicationIsTapped_ThenShowResult() {
@@ -38,7 +38,7 @@ class CalculatorTests: XCTestCase {
         calculator.multiplication()
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
-        XCTAssertEqual(calculator.calculText, "1 * 1 = 1")
+        XCTAssertEqual(calculator.calculText, "1 * 1 = 1.0")
     }
     
     func testGivenAddNewNumber_WhenDivisionIsTapped_ThenShowResult() {
@@ -46,7 +46,7 @@ class CalculatorTests: XCTestCase {
         calculator.division()
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
-        XCTAssertEqual(calculator.calculText, "1 / 1 = 1")
+        XCTAssertEqual(calculator.calculText, "1 / 1 = 1.0")
     }
     
     func testGivenCanAddNewNumber_WhenAdditionIsTapped_ThenAddNewNumber() {
@@ -80,24 +80,47 @@ class CalculatorTests: XCTestCase {
         XCTAssertTrue(calculator.expressionIsCorrect)
     }
     
-    func testB() {
+    func testGivenAddNewNumber_WhenExpressionIsCorrect_ThenIsTrue() {
         calculator.addNewNumber(stringNumber: "2")
         calculator.equal()
         XCTAssertTrue(calculator.expressionIsCorrect)
     }
     
-    func testC() {
+    func testGivenForAnError_WhenNoNumberAfterAnAddition_ThenShowAlert() {
         calculator.addNewNumber(stringNumber: "2")
         calculator.addition()
         calculator.equal()
     }
     
-  /*  func testDivisionByZero() {
+    func testGivenCalculWithPriorityOperators_WhenCalculate_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "2")
+        calculator.addition()
+        calculator.addNewNumber(stringNumber: "2")
+        calculator.division()
+        calculator.addNewNumber(stringNumber: "1")
+        calculator.multiplication()
+        calculator.addNewNumber(stringNumber: "2")
+        calculator.equal()
+        
+        XCTAssertTrue(calculator.expressionIsCorrect)
+        XCTAssertTrue(calculator.expressionHaveResult)
+        XCTAssertEqual(calculator.calculText, "2 + 2 / 1 * 2 = 6.0")
+        
+    }
+    
+    func testGivenDivisionByZero_WhenImpossible_ThenError() {
+        calculator.addNewNumber(stringNumber: "1")
         calculator.division()
         calculator.addNewNumber(stringNumber: "0")
         calculator.equal()
-        
-    } */
+        XCTAssertFalse(calculator.expressionHaveResult)
+    }
+    
+    func testGivenClear_WhenResetButtonIsTapped_ThenStartANewCalcul() {
+        calculator.addNewNumber(stringNumber: "1")
+        calculator.addition()
+        calculator.addNewNumber(stringNumber: "1")
+        calculator.clear()
+    }
 }
 

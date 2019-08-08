@@ -9,6 +9,7 @@
 import Foundation
 
 class Calculator {
+    
     var calculText = "" {
         didSet {
             NotificationCenter.default.post(name: Notification.Name("UpdateDisplay"), object: nil, userInfo: ["calculText":calculText])
@@ -35,8 +36,16 @@ class Calculator {
     }
     
     var expressionHaveDivisionByZero: Bool {
-        guard let index = elements.firstIndex(of: "/") else { return false }
-        return elements[index + 1] == "0"
+        return (elements.firstIndex(of: "/") != nil) && elements.contains("0")
+    }
+    
+    var expressionStartWithASign: Bool {
+        return elements.first != "+" && elements.first != "-" && elements.first != "*" && elements.first != "/"
+    }
+    
+    
+    func clear() {
+        calculText.removeAll()
     }
     
     func addNewNumber(stringNumber : String) {
@@ -55,9 +64,6 @@ class Calculator {
         } else {
             print("Un operateur est déja mis !")
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
-            //            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            //            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            //            self.present(alertVC, animated: true, completion: nil)
         }
     }
     
@@ -67,9 +73,6 @@ class Calculator {
         } else {
             print("Un operateur est déja mis !")
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
-            //            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            //            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            //            self.present(alertVC, animated: true, completion: nil)
         }
     }
     
@@ -102,6 +105,11 @@ class Calculator {
             return
         }
         
+        guard expressionStartWithASign else {
+            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Veuillez démarrer un nouveau calcul !"])
+            return
+        }
+        
         guard !expressionHaveDivisionByZero else {
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Il est impossible de diviser par zéro !"])
             return
@@ -129,7 +137,7 @@ class Calculator {
         guard let result = operationsToReduce.first else { return }
         calculText.append(" = \(result)")
     }
-
+    
     func priorityCalcul(operationsToReduce: [String]) -> [String] {
         var operations = operationsToReduce
         while operations.contains("*") || operations.contains("/"){
