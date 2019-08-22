@@ -13,12 +13,14 @@ class ViewController: UIViewController {
     @IBOutlet var numberButtons: [UIButton]!
     let calculator = Calculator()
     
+    
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(showAlert(notification:)), name: Notification.Name("ShowAlert"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateDisplay(notification:)), name: Notification.Name("UpdateDisplay"), object: nil)
     }
+    
     @objc func updateDisplay(notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
         guard let calculText = userInfo["calculText"] as? String else { return }
@@ -40,20 +42,11 @@ class ViewController: UIViewController {
         calculator.addNewNumber(stringNumber: numberText)
     }
     
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        calculator.addition()
-    }
     
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        calculator.soustraction()
-    }
-    
-    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
-        calculator.multiplication()
-    }
-    
-    @IBAction func tappedDivisionButton(_ sender: UIButton) {
-        calculator.division()
+    @IBAction func tappedOperatorButton(_ sender: UIButton) {
+        guard let currentOperator = sender.title(for: .normal) else { return }
+        calculator.addOperator(currentOperator: currentOperator)
+        
     }
     
     @IBAction func tappedResetButton(_ sender: UIButton) {
@@ -62,7 +55,7 @@ class ViewController: UIViewController {
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         calculator.equal()
-    }
+    } 
 }
 
 

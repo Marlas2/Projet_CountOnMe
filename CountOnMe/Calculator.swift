@@ -15,39 +15,53 @@ class Calculator {
             NotificationCenter.default.post(name: Notification.Name("UpdateDisplay"), object: nil, userInfo: ["calculText":calculText])
         }
     }
-    
+    //Split each elements
     var elements: [String] {
         return calculText.split(separator: " ").map { "\($0)" }
     }
+    
+    //Check if expression is correct or not
     var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "*" && elements.last != "/"
     }
     
+    //Check if expression 3 or more elements
     var expressionHaveEnoughElement: Bool {
         return elements.count >= 3
     }
+    
     
     var canAddOperator: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "*" && elements.last != "/"
     }
     
+    //Check if the sign equal is nil or not, if not expression have a result
     var expressionHaveResult: Bool {
         return calculText.firstIndex(of: "=") != nil
     }
     
+    //Check if the expression contain a "/", if yes and the elements after is à zero the division by zero is impossible
     var expressionHaveDivisionByZero: Bool {
-        return (elements.firstIndex(of: "/") != nil) && elements.contains("0")
+        var tempElements = elements
+        while tempElements.contains("/") {
+            guard let index = tempElements.firstIndex(of: "/") else { return false }
+            guard !(tempElements[index + 1] == "0") else { return true }
+            tempElements[index] = String()
+        }
+        return false
     }
     
+    //Check if the calcul start with an operatory sign or not
     var expressionStartWithASign: Bool {
-        return elements.first != "+" && elements.first != "-" && elements.first != "*" && elements.first != "/"
+        return elements.first == "-" || elements.first == "*" || elements.first == "/" || elements.first == "+"
     }
     
-    
+    //Function that clear all the current calcul
     func clear() {
         calculText.removeAll()
     }
     
+    //Function to add a number in calcul text
     func addNewNumber(stringNumber : String) {
         
         if expressionHaveResult {
@@ -57,44 +71,34 @@ class Calculator {
         calculText.append(stringNumber)
     }
     
-    func addition() {
-        
+    //Function with a switch to chose the operatory sign to add. 2 operatory sign trigger an alert
+    func addOperator(currentOperator: String) {
         if canAddOperator {
-            calculText.append(" + ")
+            switch currentOperator {
+            case "/":
+                calculText.append(" / ")
+            case "*":
+                calculText.append(" * ")
+            case "+":
+                calculText.append(" + ")
+            case "-":
+                calculText.append(" - ")
+            default: break
+            }
         } else {
-            print("Un operateur est déja mis !")
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
         }
     }
     
-    func soustraction() {
-        if canAddOperator {
-            calculText.append(" - ")
-        } else {
-            print("Un operateur est déja mis !")
-            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
-        }
-    }
     
-    func multiplication() {
-        if canAddOperator {
-            calculText.append(" * ")
-        } else {
-            print("Un operateur est déja mis !")
-            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
-        }
-    }
-    
-    func division() {
-        if canAddOperator {
-            calculText.append(" / ")
-        } else {
-            print("Un operateur est déja mis !")
-            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Un operateur est déja mis !"])
-        }
-    }
-    
+    //To show the result if all of this expressions are correct
     func equal() {
+        
+        guard !expressionStartWithASign else {
+            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Vous ne pouvez pas commencer une opération par un opérateur !"])
+            return
+        }
+        
         guard expressionIsCorrect else {
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Entrez une expression correcte !"])
             return
@@ -102,11 +106,6 @@ class Calculator {
         
         guard expressionHaveEnoughElement else {
             NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Démarrez un nouveau calcul !"])
-            return
-        }
-        
-        guard expressionStartWithASign else {
-            NotificationCenter.default.post(name: Notification.Name("ShowAlert"), object: nil, userInfo: ["message":"Veuillez démarrer un nouveau calcul !"])
             return
         }
         
@@ -138,6 +137,7 @@ class Calculator {
         calculText.append(" = \(result)")
     }
     
+    // Function to calcul multiplication and division before addition and soustraction
     func priorityCalcul(operationsToReduce: [String]) -> [String] {
         var operations = operationsToReduce
         while operations.contains("*") || operations.contains("/"){

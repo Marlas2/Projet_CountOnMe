@@ -16,18 +16,19 @@ class CalculatorTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         calculator = Calculator()
     }
-
+    
     func testGivenAddNewNumber_WhenAdditionIsTapped_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.addition()
+        calculator.addOperator(currentOperator: "+")
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
+
         XCTAssertEqual(calculator.calculText, "1 + 1 = 2.0")
     }
     
     func testGivenAddNewNumber_WhenSoustractionIsTapped_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.soustraction()
+        calculator.addOperator(currentOperator: "-")
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
         XCTAssertEqual(calculator.calculText, "1 - 1 = 0.0")
@@ -35,7 +36,7 @@ class CalculatorTests: XCTestCase {
     
     func testGivenAddNewNumber_WhenMultiplicationIsTapped_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.multiplication()
+        calculator.addOperator(currentOperator: "*")
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
         XCTAssertEqual(calculator.calculText, "1 * 1 = 1.0")
@@ -43,7 +44,7 @@ class CalculatorTests: XCTestCase {
     
     func testGivenAddNewNumber_WhenDivisionIsTapped_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.division()
+        calculator.addOperator(currentOperator: "/")
         calculator.addNewNumber(stringNumber: "1")
         calculator.equal()
         XCTAssertEqual(calculator.calculText, "1 / 1 = 1.0")
@@ -51,26 +52,25 @@ class CalculatorTests: XCTestCase {
     
     func testGivenCanAddNewNumber_WhenAdditionIsTapped_ThenAddNewNumber() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.addition()
-        calculator.addition()
-    }
+        calculator.addOperator(currentOperator: "+")
+        calculator.addOperator(currentOperator: "+")    }
     
     func testGivenCanAddNewNumber_WhenSoustractionIsTapped_ThenAddNewNumber() {
         calculator.addNewNumber(stringNumber: "2")
-        calculator.soustraction()
-        calculator.soustraction()
+        calculator.addOperator(currentOperator: "-")
+        calculator.addOperator(currentOperator: "-")
     }
     
     func testGivenCanAddNewNumber_WhenMultiplicationIsTapped_ThenAddNewNumber() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.multiplication()
-        calculator.multiplication()
+        calculator.addOperator(currentOperator: "*")
+        calculator.addOperator(currentOperator: "*")
     }
     
     func testGivenCanAddNewNumber_WhenDivisionIsTapped_ThenAddNewNumber() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.division()
-        calculator.division()
+        calculator.addOperator(currentOperator: "/")
+        calculator.addOperator(currentOperator: "/")
     }
     
     func testGivenEqual_WhenEqualIsTappedTwice_ThenShowAlert() {
@@ -88,17 +88,17 @@ class CalculatorTests: XCTestCase {
     
     func testGivenForAnError_WhenNoNumberAfterAnAddition_ThenShowAlert() {
         calculator.addNewNumber(stringNumber: "2")
-        calculator.addition()
+        calculator.addOperator(currentOperator: "+")
         calculator.equal()
     }
     
     func testGivenCalculWithPriorityOperators_WhenCalculate_ThenShowResult() {
         calculator.addNewNumber(stringNumber: "2")
-        calculator.addition()
+        calculator.addOperator(currentOperator: "+")
         calculator.addNewNumber(stringNumber: "2")
-        calculator.division()
+        calculator.addOperator(currentOperator: "/")
         calculator.addNewNumber(stringNumber: "1")
-        calculator.multiplication()
+        calculator.addOperator(currentOperator: "*")
         calculator.addNewNumber(stringNumber: "2")
         calculator.equal()
         
@@ -110,7 +110,7 @@ class CalculatorTests: XCTestCase {
     
     func testGivenDivisionByZero_WhenImpossible_ThenError() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.division()
+        calculator.addOperator(currentOperator: "/")
         calculator.addNewNumber(stringNumber: "0")
         calculator.equal()
         XCTAssertFalse(calculator.expressionHaveResult)
@@ -118,9 +118,22 @@ class CalculatorTests: XCTestCase {
     
     func testGivenClear_WhenResetButtonIsTapped_ThenStartANewCalcul() {
         calculator.addNewNumber(stringNumber: "1")
-        calculator.addition()
+        calculator.addOperator(currentOperator: "+")
         calculator.addNewNumber(stringNumber: "1")
         calculator.clear()
     }
+    
+    func testGivenStartWithASign_WhenButtonPlusIsTapped_ThenExpressionIsTested() {
+        calculator.addOperator(currentOperator: "+")
+        calculator.equal()
+        XCTAssertTrue(calculator.expressionStartWithASign)
+    }
+    
+    func testA() {
+        calculator.addNewNumber(stringNumber: "")
+        XCTAssertFalse(calculator.expressionHaveResult)
+        XCTAssert(calculator.calculText == "")
+    }
+    
 }
 
